@@ -10,6 +10,7 @@ env/
 
 # Configuración sensible
 .env
+.env.production
 
 # Archivos de base de datos SQLite (si usas)
 *.sqlite3
