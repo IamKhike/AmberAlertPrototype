@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1#@e8aipn-i#ta*6!q^5ymgxmgcpz0q%b@hi450b3&1ww=-p=*'
-
+SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'notificaciones',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -79,22 +80,21 @@ WSGI_APPLICATION = 'amber_alert_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alertas_amber',
-        'USER': 'root',
-        'PASSWORD': 'Jagada132325',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='3306'),
     }
 }
 
+VAPID_PUBLIC_KEY = config('VAPID_PUBLIC_KEY')
+VAPID_PRIVATE_KEY = config('VAPID_PRIVATE_KEY')
 
 
 
-VAPID_PUBLIC_KEY = "BFJW1scqdu2cU5i2FA7ttxZisjgtrBBx0RfrFkd6UC7t8ojfxIKZQiTcs03uhykk7_9qb-pR9uvQWB6uKMG2xuA"
-VAPID_PRIVATE_KEY = "hD7zQ5FNKmqlF_4SDSl5vRjLtiNO_1XCGbflypImdp8"
-VAPID_CLAIMS = {
-    "sub": "mailto:tuemail@ejemplo.com"
-}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -124,7 +124,6 @@ USE_TZ = True
 
 USE_I18N = True
 
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

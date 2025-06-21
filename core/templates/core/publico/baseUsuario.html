@@ -6,6 +6,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Alerta AMBER - Sitio Oficial{% endblock %}</title>
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+
     <link rel="stylesheet" href="{% static 'estilos_public.css' %}" />
 <script>
 const publicKey = '{{ VAPID_PUBLIC_KEY }}';
