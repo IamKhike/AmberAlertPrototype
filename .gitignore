@@ -16,8 +16,7 @@ env/
 *.sqlite3
 
 # Archivos estáticos recolectados
-/staticfiles/
-/static/
+
 
 # Archivos de logs
 *.log
@@ -33,6 +32,3 @@ env/
 # Archivos de migración (opcional, pero recomendable versionarlas)
 /migrations/
 
-# Archivos de certificado SSL (si usas)
-/cert.pem
-/key.pem
