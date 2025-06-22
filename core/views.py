@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from twilio.rest import Client
 
 
+
 def custom_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -46,10 +47,16 @@ def crear_alerta(request):
             titulo = f"Alerta AMBER: {alerta.nombre_desaparecido}"
             mensaje = f"Última ubicación: {alerta.ultima_ubicacion}. Reporta al 104"
             url = request.build_absolute_uri(reverse('detalle_alerta', args=[alerta.id]))
-            send_web_push_notification(titulo, mensaje, url)
+            try:
+                send_web_push_notification(titulo, mensaje, url)
+            except Exception as e:
+                print("Error en Web Push:", e)
 
             # 2 Enviar SMS con Twilio
-            client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+            try:
+                client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+            except Exception as e:
+                print("Error creando Twilio Client:", e)
             sms_mensaje = f"🔴 Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. Llama al 104."
 
             for usuario in UserSMS.objects.all():
