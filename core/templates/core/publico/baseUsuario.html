@@ -80,6 +80,33 @@ function subscribeUser(registration) {
     });
 }
 
+document.getElementById('activarNotificaciones').addEventListener('click', () => {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+          if (registration.active) {
+            subscribeUser(registration);
+          } else {
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'activated') {
+                  subscribeUser(registration);
+                }
+              });
+            });
+          }
+        }).catch(err => console.error('Error registrando Service Worker:', err));
+      } else {
+        console.log('Permiso para notificaciones denegado');
+      }
+    });
+  } else {
+    console.log('Service Worker o Push Manager no soportado');
+  }
+});
+
 
 </script>
 
@@ -97,7 +124,7 @@ function subscribeUser(registration) {
 
     <main>
         {% block content %}
-        
+       
         {% endblock %}
     </main>
 
