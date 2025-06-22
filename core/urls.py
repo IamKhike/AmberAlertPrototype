@@ -9,7 +9,6 @@ urlpatterns = [
     path("crear-alerta/", views.crear_alerta, name="crear_alerta"),
     path('', views.custom_login, name='login'), 
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('notificaciones/', views.prueba_notificaciones, name='notificaciones'),
      path('detalle_alerta/<int:pk>/', views.detalle_alerta, name='detalle_alerta'),
      path('lista_alertas/', views.lista_alertas, name='lista_alertas'),
 path('lista_alertas_admin/', views.lista_alertas_admin, name='lista_alertas_admin'), 
