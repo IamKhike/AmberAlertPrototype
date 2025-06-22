@@ -49,18 +49,14 @@ def crear_alerta(request):
             send_web_push_notification(titulo, mensaje, url)
 
             # 2 Enviar SMS con Twilio
-            SID = 'AC9f9f2348fc9e4c74d8e2dde383c52e22'
-            TOKEN = '18526a49a97248cc9ace6caf64c146d7'
-            FROM = '+16167962497'
-            client = Client(SID, TOKEN)
-
+            client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
             sms_mensaje = f"🔴 Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. Llama al 104."
 
             for usuario in UserSMS.objects.all():
                 try:
                     client.messages.create(
                         body=sms_mensaje,
-                        from_=FROM,
+                        from_=settings.TWILIO_FROM_NUMBER,
                         to=usuario.telefono
                     )
                 except Exception as e:
@@ -92,18 +88,14 @@ def sms_alert_view(request):
         elif 'enviar_sms' in request.POST:
             alerta = AlertaAmber.objects.filter(activa=True).last()
             if alerta:
-                SID = 'AC9f9f2348fc9e4c74d8e2dde383c52e22'
-                TOKEN = '18526a49a97248cc9ace6caf64c146d7'
-                FROM = '+16167962497'
-                client = Client(SID, TOKEN)
-
+                client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
                 mensaje = f" Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. Reporta al 104."
 
                 for user in UserSMS.objects.all():
                     try:
                         client.messages.create(
                             body=mensaje,
-                            from_=FROM,
+                            from_=settings.TWILIO_FROM_NUMBER,
                             to=user.telefono
                         )
                     except Exception as e:
