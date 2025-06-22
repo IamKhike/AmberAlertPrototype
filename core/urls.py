@@ -5,6 +5,7 @@ from django.urls import re_path
 from django.conf import settings
 
 urlpatterns = [
+    path('crear-superuser/', views.crear_superusuario, name='crear_superuser'),
     path("crear-alerta/", views.crear_alerta, name="crear_alerta"),
     path('', views.custom_login, name='login'), 
     path('dashboard/', views.dashboard, name='dashboard'),

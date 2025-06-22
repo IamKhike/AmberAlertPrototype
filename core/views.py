@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from notificaciones.utils import send_web_push_notification
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 
 def custom_login(request):
@@ -58,10 +60,6 @@ def crear_alerta(request):
     return render(request, 'core/admin/crear_alerta.html', {'form': form, 'alertas': alertas})
 
 
-def prueba_notificaciones(request):
-    return render(request, 'core/notificaciones/notificaciones.html', {
-        'ONESIGNAL_APP_ID': settings.ONESIGNAL_APP_ID
-    })
 
 def detalle_alerta(request, pk):
     alerta = get_object_or_404(AlertaAmber, pk=pk)
@@ -96,6 +94,19 @@ def cambiar_estado_alerta(request, pk):
         alerta.save()
 
     return redirect('dashboard')
+
+
+
+def crear_superusuario(request):
+    if User.objects.filter(username='admin').exists():
+        return JsonResponse({'mensaje': 'El superusuario ya existe.'})
+    
+    User.objects.create_superuser(
+        username='admin',
+        email='admin@ejemplo.com',
+        password='admin1234'
+    )
+    return JsonResponse({'mensaje': 'Superusuario creado exitosamente.'})
 
 
 #vista usuarios
