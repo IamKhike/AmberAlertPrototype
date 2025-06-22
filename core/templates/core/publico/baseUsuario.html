@@ -9,6 +9,30 @@
     <link rel="manifest" href="{% static 'manifest.json' %}">
 
     <link rel="stylesheet" href="{% static 'estilos_public.css' %}" />
+
+
+
+</head>
+<body>
+    <header>
+        <h1>Alerta AMBER Panamá - Sitio Oficial</h1>
+        <nav>
+            <a href="{% url 'inicio' %}">Inicio</a> |
+            <a href="{% url 'lista_alertas' %}">Casos Reportados</a>
+        </nav>
+    </header>
+    <hr />
+
+    <main>
+        {% block content %}
+       
+        {% endblock %}
+    </main>
+
+    <footer>
+        <hr />
+        <p style="text-align:center; font-size: 0.9em;">© 2025 Alerta AMBER Panamá</p>
+    </footer>
 <script>
 const publicKey = '{{ VAPID_PUBLIC_KEY }}';
 
@@ -80,57 +104,39 @@ function subscribeUser(registration) {
     });
 }
 
-document.getElementById('activarNotificaciones').addEventListener('click', () => {
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        navigator.serviceWorker.register('/service-worker.js').then(registration => {
-          if (registration.active) {
-            subscribeUser(registration);
-          } else {
-            registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'activated') {
-                  subscribeUser(registration);
+document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('activarNotificaciones');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                if ('serviceWorker' in navigator && 'PushManager' in window) {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            navigator.serviceWorker.register('/service-worker.js')
+                            .then(registration => {
+                                if (registration.active) {
+                                    subscribeUser(registration);
+                                } else {
+                                    registration.addEventListener('updatefound', () => {
+                                        const newWorker = registration.installing;
+                                        newWorker.addEventListener('statechange', () => {
+                                            if (newWorker.state === 'activated') {
+                                                subscribeUser(registration);
+                                            }
+                                        });
+                                    });
+                                }
+                            }).catch(err => console.error('Error registrando Service Worker:', err));
+                        } else {
+                            console.log('Permiso para notificaciones denegado');
+                        }
+                    });
+                } else {
+                    console.log('Service Worker o Push Manager no soportado');
                 }
-              });
             });
-          }
-        }).catch(err => console.error('Error registrando Service Worker:', err));
-      } else {
-        console.log('Permiso para notificaciones denegado');
-      }
+        }
     });
-  } else {
-    console.log('Service Worker o Push Manager no soportado');
-  }
-});
-
 
 </script>
-
-
-</head>
-<body>
-    <header>
-        <h1>Alerta AMBER Panamá - Sitio Oficial</h1>
-        <nav>
-            <a href="{% url 'inicio' %}">Inicio</a> |
-            <a href="{% url 'lista_alertas' %}">Casos Reportados</a>
-        </nav>
-    </header>
-    <hr />
-
-    <main>
-        {% block content %}
-       
-        {% endblock %}
-    </main>
-
-    <footer>
-        <hr />
-        <p style="text-align:center; font-size: 0.9em;">© 2025 Alerta AMBER Panamá</p>
-    </footer>
 </body>
 </html>
