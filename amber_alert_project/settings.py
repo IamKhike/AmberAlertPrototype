@@ -100,6 +100,9 @@ else:
     
 VAPID_PUBLIC_KEY = config('VAPID_PUBLIC_KEY')
 VAPID_PRIVATE_KEY = config('VAPID_PRIVATE_KEY')
+VAPID_CLAIMS = {
+    "sub": "mailto:uproyectoamber@gmail.com"  # cámbialo por tu correo real
+}
 
 TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
