@@ -11,4 +11,4 @@ services:
         fromDatabase:
           name: alertas_amber
           property: connectionString
-    migrationsCommand: ./build.sh
+    migrationsCommand: python manage.py migrate
