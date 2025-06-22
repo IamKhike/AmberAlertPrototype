@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import time
+from cloudinary.models import CloudinaryField
 
 class AlertaAmber(models.Model):
     
@@ -18,7 +19,7 @@ class AlertaAmber(models.Model):
 
     #numero de reporte
     numero_reporte = models.CharField(max_length=50, blank=True, editable=False)
-    imagen = models.ImageField(upload_to='alertas_imagenes/')  # Foto
+    imagen = CloudinaryField('imagen')  # Foto
    
     #Características físicas detalladas
     estatura = models.CharField(max_length=50)  
