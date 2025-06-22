@@ -17,14 +17,9 @@ path('lista_alertas_admin/', views.lista_alertas_admin, name='lista_alertas_admi
     #vista publica
     path('inicio/', views.inicio, name='inicio'),
 
-
-        # Esto hará que requests a /OneSignalSDKWorker.js sean servidos desde static/core/onesignal
-    re_path(r'^OneSignalSDKWorker.js$', serve, {
-        'document_root': settings.BASE_DIR / 'core/static/core/onesignal',
-        'path': 'OneSignalSDKWorker.js',
-    }),
-    re_path(r'^OneSignalSDKUpdaterWorker.js$', serve, {
-        'document_root': settings.BASE_DIR / 'core/static/core/onesignal',
-        'path': 'OneSignalSDKUpdaterWorker.js',
-    }),
+    re_path(r'^service-worker.js$', serve, {
+    'document_root': settings.BASE_DIR / 'static',
+    'path': 'service-worker.js',
+    }), 
+    
 ]
