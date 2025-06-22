@@ -46,3 +46,12 @@ class AlertaAmber(models.Model):
 
     def __str__(self):
         return f"Alerta: {self.titulo} - {self.nombre_desaparecido}"
+
+
+class UserSMS(models.Model):
+    nombre =models.CharField(max_length=100)
+    telefono = models.CharField(max_length=20, unique=True)
+    registrado_en = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.telefono})"

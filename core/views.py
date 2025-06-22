@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import AlertaAmberForm
-from .models import AlertaAmber
+from .models import AlertaAmber, UserSMS
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +12,7 @@ from notificaciones.utils import send_web_push_notification
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from twilio.rest import Client
 
 
 def custom_login(request):
@@ -41,15 +42,31 @@ def crear_alerta(request):
         if form.is_valid():
             alerta = form.save()
 
-            # Usar la función para enviar notificaciones a todos suscriptores guardados
+            # 1️ Enviar Web Push
             titulo = f"Alerta AMBER: {alerta.nombre_desaparecido}"
             mensaje = f"Última ubicación: {alerta.ultima_ubicacion}. Reporta al 104"
-            url = url = request.build_absolute_uri(reverse('detalle_alerta', args=[alerta.id]))
-  # URL dinámica para la alerta
+            url = request.build_absolute_uri(reverse('detalle_alerta', args=[alerta.id]))
             send_web_push_notification(titulo, mensaje, url)
-        
 
-            messages.success(request, "✅ Alerta creada y notificaciones Web Push enviadas.")
+            # 2 Enviar SMS con Twilio
+            SID = 'AC9f9f2348fc9e4c74d8e2dde383c52e22'
+            TOKEN = '18526a49a97248cc9ace6caf64c146d7'
+            FROM = '+16167962497'
+            client = Client(SID, TOKEN)
+
+            sms_mensaje = f"🔴 Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. Llama al 104."
+
+            for usuario in UserSMS.objects.all():
+                try:
+                    client.messages.create(
+                        body=sms_mensaje,
+                        from_=FROM,
+                        to=usuario.telefono
+                    )
+                except Exception as e:
+                    print(f"Error al enviar SMS a {usuario.telefono}: {e}")
+
+            messages.success(request, "✅ Alerta creada. Notificaciones Web Push y SMS enviadas.")
             form = AlertaAmberForm()
         else:
             print(form.errors)
@@ -59,7 +76,48 @@ def crear_alerta(request):
     alertas = AlertaAmber.objects.filter(activa=True)
     return render(request, 'core/admin/crear_alerta.html', {'form': form, 'alertas': alertas})
 
+@staff_member_required
+def sms_alert_view(request):
+    if request.method == 'POST':
+        if 'registrar' in request.POST:
+            nombre = request.POST['nombre']
+            telefono = "+507" + request.POST['telefono'].strip()
 
+            if not UserSMS.objects.filter(telefono=telefono).exists():
+                UserSMS.objects.create(nombre=nombre, telefono=telefono)
+                messages.success(request, "Número registrado correctamente.")
+            else:
+                messages.info(request, "Este número ya está registrado.")
+
+        elif 'enviar_sms' in request.POST:
+            alerta = AlertaAmber.objects.filter(activa=True).last()
+            if alerta:
+                SID = 'AC9f9f2348fc9e4c74d8e2dde383c52e22'
+                TOKEN = '18526a49a97248cc9ace6caf64c146d7'
+                FROM = '+16167962497'
+                client = Client(SID, TOKEN)
+
+                mensaje = f" Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. Reporta al 104."
+
+                for user in UserSMS.objects.all():
+                    try:
+                        client.messages.create(
+                            body=mensaje,
+                            from_=FROM,
+                            to=user.telefono
+                        )
+                    except Exception as e:
+                        print(f"Error con {user.telefono}: {e}")
+                messages.success(request, "SMS enviados a todos los usuarios registrados.")
+            else:
+                messages.error(request, "No hay alertas activas para enviar.")
+
+        return redirect('sms_alert')
+
+    total = UserSMS.objects.count()
+    return render(request, 'core/admin/sms_alert.html', {
+        'total_registrados': total
+    })
 
 def detalle_alerta(request, pk):
     alerta = get_object_or_404(AlertaAmber, pk=pk)
@@ -96,17 +154,8 @@ def cambiar_estado_alerta(request, pk):
     return redirect('dashboard')
 
 
+#vista sms admin registro numero
 
-def crear_superusuario(request):
-    if User.objects.filter(username='admin').exists():
-        return JsonResponse({'mensaje': 'El superusuario ya existe.'})
-    
-    User.objects.create_superuser(
-        username='admin',
-        email='admin@ejemplo.com',
-        password='admin1234'
-    )
-    return JsonResponse({'mensaje': 'Superusuario creado exitosamente.'})
 
 
 #vista usuarios
