@@ -20,17 +20,6 @@
     box-sizing: border-box;
 }
 
-.login-container {
-    background-color: var(--blanco-panama);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px var(--sombra-login);
-    width: 90%;
-    max-width: 350px;
-    text-align: center;
-}
-
-/* Estilo general del body */
 body {
     font-family: 'Arial', sans-serif;
     background: linear-gradient(135deg, var(--azul-panama) 0%, var(--rojo-panama) 50%, var(--azul-panama) 100%);
@@ -39,18 +28,31 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px; /* espacio para que no toque bordes en móviles */
 }
 
-/* Contenedor del formulario */
-form {
-    margin-top: 10px;
+/* Contenedor principal del login */
+.login-container {
+    background-color: var(--blanco-panama);
+    padding: 25px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--sombra-login);
+    width: 100%;
+    max-width: 400px; /* un poco más ancho para pantallas grandes */
+    box-sizing: border-box;
+    text-align: center;
 }
 
 /* Título */
 h2 {
-    text-align: center;
     color: var(--rojo-panama);
     margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+/* Formulario */
+form {
+    margin-top: 10px;
 }
 
 /* Etiquetas */
@@ -59,36 +61,40 @@ label {
     margin: 10px 0 5px;
     color: var(--gris-oscuro);
     font-weight: bold;
+    font-size: 1rem;
+    text-align: left;
 }
 
-/* Campos de texto */
+/* Inputs */
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border: 1px solid var(--gris-medio);
     border-radius: 4px;
     background-color: var(--gris-claro);
+    font-size: 1rem;
     transition: border 0.3s;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-    border: 1px solid var(--azul-panama);
+    border: 2px solid var(--azul-panama);
     outline: none;
 }
 
 /* Botón */
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: var(--rojo-panama);
     color: var(--blanco-panama);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    margin-top: 15px;
+    margin-top: 20px;
+    font-size: 1.1rem;
     transition: background-color 0.3s;
 }
 
@@ -104,9 +110,16 @@ p {
     margin-bottom: 10px;
 }
 
-/* Responsive simple */
-@media (max-width: 400px) {
-    form {
-        padding: 15px;
+/* Responsive: ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 20px 15px;
+        max-width: 95%;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    label, input[type="text"], input[type="password"], button {
+        font-size: 1rem;
     }
 }
