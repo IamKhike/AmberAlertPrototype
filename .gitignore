@@ -14,6 +14,7 @@ env/
 # Archivos de base de datos SQLite (si usas)
 *.sqlite3
 
+/staticfiles/
 
 
 
