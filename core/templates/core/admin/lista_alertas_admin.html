@@ -3,13 +3,14 @@
 
 <div class="alertas-admin-container">
     {% for alerta in alertas %}
-       <div class="alerta-admin-card {% if alerta.activa %}estado-activa{% else %}estado-inactiva{% endif %}">
+    <a href="{% url 'detalle_alerta' alerta.id %}" class="alerta-card urgente" style="text-decoration: none; color: inherit;">
+    <div class="alerta-admin-card {% if alerta.activa %}estado-activa{% else %}estado-inactiva{% endif %}">
     <h3>{{ alerta.nombre_desaparecido }}</h3>
     <p><strong>Estado:</strong> {% if alerta.activa %}Activa{% else %}Encontrada{% endif %}</p>
     <p><strong>Ubicación:</strong> {{ alerta.ultima_ubicacion }}</p>
     <p><strong>Fecha:</strong> {{ alerta.fecha_desaparicion|date:"d/m/Y" }}</p>
     <p><strong>Edad:</strong> {{ alerta.edad }} años</p>
-
+    </a>
     {% if alerta.imagen %}
         <img src="{{ alerta.imagen.url }}" alt="{{ alerta.nombre_desaparecido }}" width="80" height="80">
     {% endif %}

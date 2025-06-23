@@ -160,7 +160,6 @@ li:hover {
 }
 
 li::before {
-    content: '🔍';
     margin-right: 0.5rem;
 }
 
@@ -212,7 +211,7 @@ p:has(strong) {
 }
 
 .alerta-card::before {
-    content: '🚨 ALERTA AMBER';
+    content: 'ALERTA AMBER';
     position: absolute;
     top: 0;
     left: 0;
