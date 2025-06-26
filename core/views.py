@@ -57,8 +57,10 @@ def crear_alerta(request):
                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
             except Exception as e:
                 print("Error creando Twilio Client:", e)
-            sms_mensaje = f"🔴 Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}."
+            sms_mensaje = (
+            f"🔴 Alerta AMBER: {alerta.nombre_desaparecido} desapareció en {alerta.ultima_ubicacion}. "
             f"Más info: {url} Llama al 104."
+            )
 
             for usuario in UserSMS.objects.all():
                 try:
