@@ -1,5 +1,5 @@
 {% block content %}
-<h2>📋 Lista de Alertas Administrativas</h2>
+<h2>Lista de Alertas Administrativas</h2>
 
 <div class="alertas-admin-container">
     {% for alerta in alertas %}
@@ -22,10 +22,10 @@
             {% csrf_token %}
             {% if alerta.activa %}
                 <input type="hidden" name="accion" value="desactivar">
-                <button type="submit" class="btn-desactivar">⏸️ Desactivar</button>
+                <button type="submit" class="btn-desactivar">Desactivar</button>
             {% else %}
                 <input type="hidden" name="accion" value="activar">
-                <button type="submit" class="btn-activar">▶️ Activar</button>
+                <button type="submit" class="btn-activar">Activar</button>
             {% endif %}
         </form>
 
